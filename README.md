@@ -48,7 +48,7 @@ The Prisma schema (`prisma/schema.prisma`) defines the database structure.
 
 ### Server Actions
 
-Server actions are used to interact with the database as seen in (`src/actions`) directory.
+Server actions are used to interact with the database, as seen in the `src/actions` directory.
 
 ## 📌 Pagination
 
@@ -66,42 +66,46 @@ export async function getPaginatedPosts(page: number, pageSize: number) {
 }
 ```
 
-📊 Analytics & Event Tracking
+## 📊 Analytics & Event Tracking
 
-The application tracks user interactions through an Event model in Prisma. The analytics page (`/`) provides insights into user activity.
+The application tracks user interactions through an `Event` model in Prisma. The analytics page (`/`) provides insights into user activity.
 
-Fetching Analytics Data
+### Fetching Analytics Data
 
 Analytics data is retrieved using the following server actions:
 
+```typescript
 import {
-getTotalEventsPerPost,
-getViewsPerPost,
-getTimeSeriesData,
+  getTotalEventsPerPost,
+  getViewsPerPost,
+  getTimeSeriesData,
 } from "@/actions/event";
+```
 
-Time-Series Data Aggregation
+### Time-Series Data Aggregation
 
 Time-series data is formatted and aggregated for visualization:
 
+```typescript
 const chartData = timeSeriesData.map((event) => ({
-timestamp: event.timestamp.toISOString().split("T")[0],
-[event.type]: 1,
+  timestamp: event.timestamp.toISOString().split("T")[0],
+  [event.type]: 1,
 }));
 
 const aggregatedData = chartData.reduce((acc, curr) => {
-const date = curr.timestamp;
-if (!acc[date]) {
-acc[date] = { timestamp: date, view: 0, click: 0 };
-}
-if (curr.view) acc[date].view += 1;
-if (curr.click) acc[date].click += 1;
-return acc;
+  const date = curr.timestamp;
+  if (!acc[date]) {
+    acc[date] = { timestamp: date, view: 0, click: 0 };
+  }
+  if (curr.view) acc[date].view += 1;
+  if (curr.click) acc[date].click += 1;
+  return acc;
 }, {} as Record<string, { timestamp: string; view: number; click: number }>);
+```
 
-Displaying Analytics
+### Displaying Analytics
 
-Analytics are displayed using a component (EventsTrend) to visualize trends, and tables to show event counts per post.
+Analytics are displayed using the `EventsTrend` component to visualize trends and tables to show event counts per post.
 
 ## 🔹 Additional Notes
 

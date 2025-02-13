@@ -7,7 +7,7 @@ export default async function UsersPage({
 }: {
   searchParams: { page?: string; pageSize?: string };
 }) {
-  const { page, pageSize } = searchParams;
+  const { page, pageSize } = await searchParams;
   const pageNum = parseInt(page || "1");
   const pageSizeNum = parseInt(pageSize || "10");
 
