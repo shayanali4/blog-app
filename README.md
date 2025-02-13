@@ -44,11 +44,64 @@ This repository contains a Next.js 15 project using Prisma and Server Actions fo
 
 ### Prisma Schema
 
-The Prisma schema (`prisma/schema.prisma`) defines the database structure.
+The Prisma schema (`prisma/schema.prisma`) defines the database structure. Here’s an example of the schema:
+
+```prisma
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  events    Event[]
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+  posts Post[]
+  events Event[]
+}
+
+model Event {
+  id        Int      @id @default(autoincrement())
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  type      String
+  timestamp DateTime @default(now())
+}
+```
 
 ### Server Actions
 
-Server actions are used to interact with the database as seen in (`src/actions`) directory.
+Server actions are used to interact with the database, ensuring efficient data retrieval and updates. These actions are found in the `src/actions` directory.
+
+#### Example: Fetching a Single Post by ID
+
+```typescript
+import { prisma } from "@/lib/prisma";
+
+export async function getPostById(postId: number) {
+  return await prisma.post.findUnique({
+    where: { id: postId },
+    include: { author: true },
+  });
+}
+```
+
+#### Example: Logging an Event
+
+```typescript
+export async function logEvent(postId: number, userId: number, type: string) {
+  return await prisma.event.create({
+    data: { postId, userId, type },
+  });
+}
+```
 
 ## 📌 Pagination
 
@@ -77,6 +130,7 @@ To log an event when a user views a post, the following function is used:
 #### Example: Logging a "view" Event
 
 ```typescript
+// app/posts/[id]/page.tsx
 import { getPostById } from "@/actions";
 import { logEvent } from "@/actions/event";
 import { notFound } from "next/navigation";
