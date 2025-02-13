@@ -1,23 +1,57 @@
 "use client";
 import Form from "next/form";
 import { createPost } from "@/actions";
-
 import { useActionState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function NewPost() {
+  const router = useRouter();
+
   const [state, action, pending] = useActionState(createPostAction, {
     title: "",
     authorId: 1,
     content: "",
     published: false,
     id: 1,
+    errors: {}, // Add an errors object to store validation errors
   });
 
   async function createPostAction(prevState: any, formData: FormData) {
     const title = formData.get("title") as string;
     const content = formData.get("content") as string;
     const authorId = 1;
-    return await createPost({ title, content, authorId });
+
+    // Initialize an errors object
+    const errors: { title?: string; content?: string } = {};
+
+    // Validate title
+    if (!title) {
+      errors.title = "Title is required";
+    } else if (title.length < 5) {
+      errors.title = "Title must be at least 5 characters long";
+    }
+
+    // Validate content
+    if (!content) {
+      errors.content = "Content is required";
+    } else if (content.length < 20) {
+      errors.content = "Content must be at least 20 characters long";
+    }
+
+    // If there are errors, return them
+    if (Object.keys(errors).length > 0) {
+      return { ...prevState, errors };
+    }
+
+    const newPost = await createPost({ title, content, authorId });
+
+    // If no errors, proceed to create the post
+    // return await createPost({ title, content, authorId });
+    if (newPost) {
+      router.push("/posts"); // Redirect to posts page
+    }
+
+    return newPost;
   }
 
   return (
@@ -34,7 +68,12 @@ export default function NewPost() {
             name="title"
             placeholder="Enter your post title"
             className="w-full px-4 py-2 border rounded-lg"
+            required
+            minLength={5}
           />
+          {state.errors?.title && (
+            <p className="text-red-500 text-sm mt-1">{state.errors.title}</p>
+          )}
         </div>
         <div>
           <label htmlFor="content" className="block text-lg mb-2">
@@ -46,7 +85,12 @@ export default function NewPost() {
             placeholder="Write your post content here..."
             rows={6}
             className="w-full px-4 py-2 border rounded-lg"
+            required
+            minLength={20}
           />
+          {state.errors?.content && (
+            <p className="text-red-500 text-sm mt-1">{state.errors.content}</p>
+          )}
         </div>
         <button
           type="submit"

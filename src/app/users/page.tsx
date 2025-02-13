@@ -1,18 +1,18 @@
-// app/users/page.tsx
 import { getUsers } from "@/actions/user";
+import PageSizeInput from "@/components/PageSizeInput";
 import Link from "next/link";
 
 export default async function UsersPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: { page?: string; pageSize?: string };
 }) {
-  const { page } = await searchParams;
+  const { page, pageSize } = await searchParams;
   const pageNum = parseInt(page || "1");
-  const pageSize = 10;
+  const pageSizeNum = parseInt(pageSize || "10");
 
-  const { users, totalUsers } = await getUsers(pageNum, pageSize);
-  const totalPages = Math.ceil(totalUsers / pageSize);
+  const { users, totalUsers } = await getUsers(pageNum, pageSizeNum);
+  const totalPages = Math.ceil(totalUsers / pageSizeNum);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -24,6 +24,7 @@ export default async function UsersPage({
           </button>
         </Link>
       </div>
+      <PageSizeInput pageSize={pageSizeNum} baseUrl="/users" />
 
       {/* Users Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -50,7 +51,7 @@ export default async function UsersPage({
         {Array.from({ length: totalPages }, (_, i) => (
           <a
             key={i + 1}
-            href={`/users?page=${i + 1}`}
+            href={`/users?page=${i + 1}&pageSize=${pageSizeNum}`}
             className={`px-4 py-2 rounded-lg ${
               pageNum === i + 1
                 ? "bg-blue-600 text-white"

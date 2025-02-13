@@ -5,7 +5,7 @@ function Header() {
   return (
     <header className="bg-blue-600 text-white p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-xl font-bold">Blogs Web</h1>
+        <h1 className="text-xl font-bold">Blogs Application</h1>
         <nav>
           <ul className="flex space-x-6">
             <li>

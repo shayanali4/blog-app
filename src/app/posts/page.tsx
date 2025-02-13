@@ -1,22 +1,22 @@
-// app/posts/page.tsx
 import { getPosts } from "@/actions/post";
+import PageSizeInput from "@/components/PageSizeInput";
 import Link from "next/link";
 
 export default async function PostsPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: { page?: string; pageSize?: string };
 }) {
-  const { page } = await searchParams;
+  const { page, pageSize } = await searchParams;
   // Parse the page number from searchParams
   const pageNum = parseInt(page || "1");
-  const pageSize = 10;
+  const pageSizeNum = parseInt(pageSize || "10");
 
   // Fetch posts with pagination
-  const { posts, totalPosts } = await getPosts(pageNum, pageSize);
+  const { posts, totalPosts } = await getPosts(pageNum, pageSizeNum);
 
   // Calculate total pages for pagination
-  const totalPages = Math.ceil(totalPosts / pageSize);
+  const totalPages = Math.ceil(totalPosts / pageSizeNum);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -28,6 +28,8 @@ export default async function PostsPage({
           </button>
         </Link>
       </div>
+
+      <PageSizeInput pageSize={pageSizeNum} baseUrl="/posts" />
       {/* Posts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post) => (
@@ -54,7 +56,7 @@ export default async function PostsPage({
         {Array.from({ length: totalPages }, (_, i) => (
           <a
             key={i + 1}
-            href={`/posts?page=${i + 1}`}
+            href={`/posts?page=${i + 1}&pageSize=${pageSizeNum}`}
             className={`px-4 py-2 rounded-lg ${
               pageNum === i + 1
                 ? "bg-blue-600 text-white"

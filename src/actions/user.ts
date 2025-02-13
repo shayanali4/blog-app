@@ -1,10 +1,19 @@
 "use server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "../lib/prisma";
 
-export async function createUser(name: string, email: string) {
-  return await prisma.user.create({
+export async function createUser({
+  name,
+  email,
+}: {
+  name: string;
+  email: string;
+}) {
+  const user = await prisma.user.create({
     data: { name, email },
   });
+  revalidatePath("/users");
+  return user;
 }
 
 export async function getUsers(page: number, pageSize: number) {
