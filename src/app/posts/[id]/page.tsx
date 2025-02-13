@@ -1,4 +1,3 @@
-// app/posts/[id]/page.tsx
 import { getPostById } from "@/actions";
 import { logEvent } from "@/actions/event";
 import { notFound } from "next/navigation";
