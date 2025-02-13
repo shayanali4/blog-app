@@ -7,7 +7,7 @@ export default async function UsersPage({
 }: {
   searchParams: { page?: string; pageSize?: string };
 }) {
-  const { page, pageSize } = await searchParams;
+  const { page, pageSize } = searchParams;
   const pageNum = parseInt(page || "1");
   const pageSizeNum = parseInt(pageSize || "10");
 
@@ -26,24 +26,37 @@ export default async function UsersPage({
       </div>
       <PageSizeInput pageSize={pageSizeNum} baseUrl="/users" />
 
-      {/* Users Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {users.map((user) => (
-          <Link key={user.id} href={`/users/${user.id}`}>
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 p-6">
-              <h2 className="text-xl font-semibold mb-2">{user.name}</h2>
-              <p className="text-gray-600 mb-4">{user.email}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 mb-4">
-                  <b>Posts:</b> {user._count.posts}
-                </span>
-                <span className="text-gray-600 mb-4">
-                  <b>Events:</b> {user._count.events}
-                </span>
-              </div>
-            </div>
-          </Link>
-        ))}
+      {/* Users Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="py-3 px-6 text-left">Name</th>
+              <th className="py-3 px-6 text-left">Email</th>
+              <th className="py-3 px-6 text-center">Posts</th>
+              <th className="py-3 px-6 text-center">Events</th>
+              <th className="py-3 px-6 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id} className="border-b hover:bg-gray-100">
+                <td className="py-3 px-6">{user.name}</td>
+                <td className="py-3 px-6">{user.email}</td>
+                <td className="py-3 px-6 text-center">{user._count.posts}</td>
+                <td className="py-3 px-6 text-center">{user._count.events}</td>
+                <td className="py-3 px-6 text-center">
+                  <Link
+                    href={`/users/${user.id}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    View
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Pagination Controls */}
