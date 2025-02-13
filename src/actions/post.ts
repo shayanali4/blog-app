@@ -41,6 +41,7 @@ export async function getPosts(page: number, pageSize: number) {
   const posts = await prisma.post.findMany({
     skip: offset,
     take: pageSize,
+    orderBy: { id: "desc" },
     include: { author: true },
   });
   const totalPosts = await prisma.post.count();

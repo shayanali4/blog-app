@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blog Application using Next.js 15 + Prisma + Server Actions
 
-## Getting Started
+This repository contains a Next.js 15 project using Prisma and Server Actions for database interactions. The project includes logging, analytics tracking, and pagination features.
 
-First, run the development server:
+## 🚀 Getting Started
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Prerequisites
+
+- Node.js 18+
+- SQLite
+- Prisma CLI (`npm install -g prisma`)
+- Next.js 15
+
+### Setup
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/shayanali4/blog-app.git
+   cd blog-app
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Configure the database:
+   - Copy `.env.example` to `.env` and update the `DATABASE_URL` if needed:
+     ```sh
+     cp .env.example .env
+     ```
+   - Run Prisma migrations:
+     ```sh
+     npx prisma migrate dev --name init
+     ```
+   - Generate Prisma client:
+     ```sh
+     npx prisma generate
+     ```
+4. Start the development server:
+   ```sh
+   npm run dev
+   ```
+
+## 📄 Prisma Schema & Server Actions
+
+### Prisma Schema
+
+The Prisma schema (`prisma/schema.prisma`) defines the database structure.
+
+### Server Actions
+
+Server actions are used to interact with the database as seen in (`src/actions`) directory.
+
+## 📌 Pagination
+
+Pagination is implemented using Prisma's `skip` and `take`.
+
+#### Fetch Paginated Posts
+
+```typescript
+export async function getPaginatedPosts(page: number, pageSize: number) {
+  return await prisma.post.findMany({
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    orderBy: { id: "desc" },
+  });
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+📊 Analytics & Event Tracking
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The application tracks user interactions through an Event model in Prisma. The analytics page (`/`) provides insights into user activity.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Fetching Analytics Data
 
-## Learn More
+Analytics data is retrieved using the following server actions:
 
-To learn more about Next.js, take a look at the following resources:
+import {
+getTotalEventsPerPost,
+getViewsPerPost,
+getTimeSeriesData,
+} from "@/actions/event";
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Time-Series Data Aggregation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Time-series data is formatted and aggregated for visualization:
 
-## Deploy on Vercel
+const chartData = timeSeriesData.map((event) => ({
+timestamp: event.timestamp.toISOString().split("T")[0],
+[event.type]: 1,
+}));
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+const aggregatedData = chartData.reduce((acc, curr) => {
+const date = curr.timestamp;
+if (!acc[date]) {
+acc[date] = { timestamp: date, view: 0, click: 0 };
+}
+if (curr.view) acc[date].view += 1;
+if (curr.click) acc[date].click += 1;
+return acc;
+}, {} as Record<string, { timestamp: string; view: number; click: number }>);
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Displaying Analytics
+
+Analytics are displayed using a component (EventsTrend) to visualize trends, and tables to show event counts per post.
+
+## 🔹 Additional Notes
+
+- Ensure `.env` is correctly configured before running migrations.
+- Prisma migrations should be run whenever the schema is modified.
+- Server actions must be used only in server components.
