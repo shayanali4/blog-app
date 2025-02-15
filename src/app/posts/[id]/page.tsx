@@ -5,14 +5,11 @@ import { notFound } from "next/navigation";
 export default async function SinglePostPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
   const postId = parseInt(id);
   const userId = 1; // Replace with actual user ID
-
-  console.log("vars=>", postId, userId);
-  // Log a "view" event
 
   // Fetch the post data
   const post = await getPostById(postId);

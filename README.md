@@ -35,6 +35,10 @@ This repository contains a Next.js 15 project using Prisma and Server Actions fo
      ```sh
      npx prisma generate
      ```
+   - Seed the database:
+     ```sh
+     npm run seed
+     ```
 4. Start the development server:
    ```sh
    npm run dev
@@ -144,11 +148,8 @@ export default async function SinglePostPage({
   const postId = parseInt(id);
   const userId = 1; // Replace with actual user ID
 
-  console.log("vars=>", postId, userId);
-
   // Fetch the post data
   const post = await getPostById(postId);
-  console.log("post=>", post);
 
   if (!post) {
     notFound();

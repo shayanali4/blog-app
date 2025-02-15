@@ -41,7 +41,6 @@ export default function NewUser() {
     }
 
     // If no errors, proceed to create the user
-
     const newUser = await createUser({ name, email });
 
     if (newUser) {

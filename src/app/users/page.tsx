@@ -1,11 +1,12 @@
 import { getUsers } from "@/actions/user";
 import PageSizeInput from "@/components/PageSizeInput";
+import Pagination from "@/components/Pagination";
 import Link from "next/link";
 
 export default async function UsersPage({
   searchParams,
 }: {
-  searchParams: { page?: string; pageSize?: string };
+  searchParams: Promise<{ page?: string; pageSize?: string }>;
 }) {
   const { page, pageSize } = await searchParams;
   const pageNum = parseInt(page || "1");
@@ -60,21 +61,11 @@ export default async function UsersPage({
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex justify-center mt-8 space-x-2">
-        {Array.from({ length: totalPages }, (_, i) => (
-          <a
-            key={i + 1}
-            href={`/users?page=${i + 1}&pageSize=${pageSizeNum}`}
-            className={`px-4 py-2 rounded-lg ${
-              pageNum === i + 1
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            } transition-colors duration-300`}
-          >
-            {i + 1}
-          </a>
-        ))}
-      </div>
+      <Pagination
+        totalPages={totalPages}
+        page={pageNum}
+        pageSize={pageSizeNum}
+      />
     </div>
   );
 }

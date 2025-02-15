@@ -38,6 +38,5 @@ export async function getUsers(page: number, pageSize: number) {
 export async function getUserById(userId: number) {
   return await prisma.user.findUnique({
     where: { id: userId },
-    // include: { author: true },
   });
 }

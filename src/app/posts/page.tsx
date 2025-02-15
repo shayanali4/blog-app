@@ -1,14 +1,15 @@
 import { getPosts } from "@/actions/post";
 import PageSizeInput from "@/components/PageSizeInput";
+import Pagination from "@/components/Pagination";
+import PostCard from "@/components/PostCard";
 import Link from "next/link";
 
-export default async function PostsPage({
-  searchParams,
-}: {
-  searchParams: { page?: string; pageSize?: string };
+export default async function PostsPage(props: {
+  searchParams: Promise<{ page?: string; pageSize?: string }>;
 }) {
-  const { page, pageSize } = await searchParams;
-  // Parse the page number from searchParams
+  const searchParams = await props.searchParams;
+  const { page, pageSize } = searchParams;
+
   const pageNum = parseInt(page || "1");
   const pageSizeNum = parseInt(pageSize || "10");
 
@@ -33,40 +34,16 @@ export default async function PostsPage({
       {/* Posts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post) => (
-          <Link href={`/posts/${post.id}`}>
-            <div
-              key={post.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-            >
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
-                <p className="text-gray-600 mb-4">{post.content}</p>
-                <p className="text-sm text-gray-500">
-                  Author:{" "}
-                  <span className="font-medium">{post.author.name}</span>
-                </p>
-              </div>
-            </div>
-          </Link>
+          <PostCard key={post.id} post={post} />
         ))}
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex justify-center mt-8 space-x-2">
-        {Array.from({ length: totalPages }, (_, i) => (
-          <a
-            key={i + 1}
-            href={`/posts?page=${i + 1}&pageSize=${pageSizeNum}`}
-            className={`px-4 py-2 rounded-lg ${
-              pageNum === i + 1
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            } transition-colors duration-300`}
-          >
-            {i + 1}
-          </a>
-        ))}
-      </div>
+      <Pagination
+        totalPages={totalPages}
+        page={pageNum}
+        pageSize={pageSizeNum}
+      />
     </div>
   );
 }

@@ -46,7 +46,6 @@ export default function NewPost() {
     const newPost = await createPost({ title, content, authorId });
 
     // If no errors, proceed to create the post
-    // return await createPost({ title, content, authorId });
     if (newPost) {
       router.push("/posts"); // Redirect to posts page
     }
