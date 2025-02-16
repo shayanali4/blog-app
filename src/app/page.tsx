@@ -1,10 +1,13 @@
+import React from "react";
 import {
   getTotalEventsPerPost,
   getViewsPerPost,
   getTimeSeriesData,
 } from "@/actions/event";
 
-import EventsTrend from "@/components/EventsTrend";
+import EventsTrend from "@/components/home/EventsTrend";
+import ViewsPerPost from "@/components/home/ViewsPerPost";
+import EventsPerPost from "@/components/home/EventsPerPost";
 
 export default async function AnalyticsPage() {
   // Fetch analytics data
@@ -13,8 +16,13 @@ export default async function AnalyticsPage() {
   const timeSeriesData = await getTimeSeriesData();
 
   // Process time series data for the chart
+  // const chartData = timeSeriesData.map((event) => ({
+  //   timestamp: event.timestamp.toISOString().split("T")[0], // Format date as YYYY-MM-DD
+  //   [event.type]: 1, // Increment count for the event type
+  // }));
+
   const chartData = timeSeriesData.map((event) => ({
-    timestamp: event.timestamp.toISOString().split("T")[0], // Format date as YYYY-MM-DD
+    timestamp: new Date(event.timestamp).toISOString().split("T")[0], // Convert timestamp to Date
     [event.type]: 1, // Increment count for the event type
   }));
 
@@ -34,58 +42,12 @@ export default async function AnalyticsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Analytics</h1>
-
+      {/* Events Chart */}
       <EventsTrend finalChartData={finalChartData} />
-
       {/* Total Events Per Post */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Total Events Per Post</h2>
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">Post ID</th>
-              <th className="py-2 px-4 border-b">Total Events</th>
-            </tr>
-          </thead>
-          <tbody>
-            {totalEventsPerPost.map((event) => (
-              <tr key={event.postId}>
-                <td className="py-2 px-4 border-b text-center">
-                  {event.postId}
-                </td>
-                <td className="py-2 px-4 border-b text-center">
-                  {event._count.postId}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
+      <EventsPerPost totalEventsPerPost={totalEventsPerPost} />
       {/* Views Per Post */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Views Per Post</h2>
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b">Post ID</th>
-              <th className="py-2 px-4 border-b">Total Views</th>
-            </tr>
-          </thead>
-          <tbody>
-            {viewsPerPost.map((event) => (
-              <tr key={event.postId}>
-                <td className="py-2 px-4 border-b text-center">
-                  {event.postId}
-                </td>
-                <td className="py-2 px-4 border-b text-center">
-                  {event._count.postId}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ViewsPerPost viewsPerPost={viewsPerPost} />
     </div>
   );
 }

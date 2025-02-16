@@ -1,6 +1,6 @@
 # Blog Application using Next.js 15 + Prisma + Server Actions
 
-This repository contains a Next.js 15 project using Prisma and Server Actions for database interactions. The project includes logging, analytics tracking, and pagination features.
+This repository contains a Next.js 15 project using Prisma and Server Actions for database interactions. The project includes logging, analytics tracking, pagination features, and unit tests using Jest.
 
 ## 🚀 Getting Started
 
@@ -42,6 +42,25 @@ This repository contains a Next.js 15 project using Prisma and Server Actions fo
 4. Start the development server:
    ```sh
    npm run dev
+   ```
+
+## 🧪 Running Tests
+
+The project includes unit tests using Jest. To run the tests, use:
+
+```sh
+npm run test
+```
+
+### Jest Testing for Prisma & Next.js is setup
+
+1. Install testing dependencies:
+   ```sh
+   npm install --save-dev jest ts-jest @testing-library/react @testing-library/jest-dom @prisma/client
+   ```
+2. Run the tests:
+   ```sh
+   npm run test
    ```
 
 ## 📄 Prisma Schema & Server Actions
@@ -180,27 +199,6 @@ import {
   getViewsPerPost,
   getTimeSeriesData,
 } from "@/actions/event";
-```
-
-### Time-Series Data Aggregation
-
-Time-series data is formatted and aggregated for visualization:
-
-```typescript
-const chartData = timeSeriesData.map((event) => ({
-  timestamp: event.timestamp.toISOString().split("T")[0],
-  [event.type]: 1,
-}));
-
-const aggregatedData = chartData.reduce((acc, curr) => {
-  const date = curr.timestamp;
-  if (!acc[date]) {
-    acc[date] = { timestamp: date, view: 0, click: 0 };
-  }
-  if (curr.view) acc[date].view += 1;
-  if (curr.click) acc[date].click += 1;
-  return acc;
-}, {} as Record<string, { timestamp: string; view: number; click: number }>);
 ```
 
 ### Displaying Analytics

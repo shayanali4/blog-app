@@ -1,7 +1,5 @@
 import { getPosts } from "@/actions/post";
-import PageSizeInput from "@/components/PageSizeInput";
-import Pagination from "@/components/Pagination";
-import PostCard from "@/components/PostCard";
+import PostsGrid from "@/components/post/PostsGrid";
 import Link from "next/link";
 
 export default async function PostsPage(props: {
@@ -22,24 +20,22 @@ export default async function PostsPage(props: {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">All Posts</h1>
+        <h1 data-testid="posts-title" className="text-3xl font-bold">
+          All Posts
+        </h1>
         <Link href="/posts/create">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
+          <button
+            data-testid="create-post-btn"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+          >
             Create Post
           </button>
         </Link>
       </div>
 
-      <PageSizeInput pageSize={pageSizeNum} baseUrl="/posts" />
       {/* Posts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
-        ))}
-      </div>
-
-      {/* Pagination Controls */}
-      <Pagination
+      <PostsGrid
+        posts={posts}
         totalPages={totalPages}
         page={pageNum}
         pageSize={pageSizeNum}

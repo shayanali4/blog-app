@@ -18,9 +18,13 @@ function PostCard({ post }: { post: Post }) {
         className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
       >
         <div className="p-6">
-          <h2 className="text-xl font-semibold mb-2">{title}</h2>
-          <p className="text-gray-600 mb-4">{content}</p>
-          <p className="text-sm text-gray-500">
+          <h2 data-testid="post-title" className="text-xl font-semibold mb-2">
+            {title}
+          </h2>
+          <p data-testid="post-content" className="text-gray-600 mb-4">
+            {content}
+          </p>
+          <p data-testid="post-author" className="text-sm text-gray-500">
             Author: <span className="font-medium">{author.name}</span>
           </p>
         </div>

@@ -26,7 +26,12 @@ function EventsTrend({ finalChartData }: EventsTrendProps) {
     <div className="mb-8">
       <h2 className="text-2xl font-semibold mb-4">Event Trends Over Time</h2>
       <div className="h-96">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          minHeight={"100px"}
+          minWidth={"100px"}
+        >
           <LineChart data={finalChartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="timestamp" />

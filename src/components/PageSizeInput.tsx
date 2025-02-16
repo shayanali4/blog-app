@@ -12,6 +12,7 @@ function PageSizeInput({
     <div className="flex justify-end mb-4">
       <label className="mr-2 font-semibold">Page Size:</label>
       <select
+        data-testid="page-size-select"
         className="border rounded px-2 py-1"
         onChange={(e) => {
           const newSize = e.target.value;
