@@ -15,12 +15,6 @@ export default async function AnalyticsPage() {
   const viewsPerPost = await getViewsPerPost();
   const timeSeriesData = await getTimeSeriesData();
 
-  // Process time series data for the chart
-  // const chartData = timeSeriesData.map((event) => ({
-  //   timestamp: event.timestamp.toISOString().split("T")[0], // Format date as YYYY-MM-DD
-  //   [event.type]: 1, // Increment count for the event type
-  // }));
-
   const chartData = timeSeriesData.map((event) => ({
     timestamp: new Date(event.timestamp).toISOString().split("T")[0], // Convert timestamp to Date
     [event.type]: 1, // Increment count for the event type

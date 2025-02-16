@@ -30,15 +30,6 @@ describe("PostCard", () => {
       `Author: ${mockPost.author.name}`
     );
 
-    // expect(
-    //   screen.getByText((content, element) =>
-    //     element?.textContent?.includes(`Author: ${mockPost.author.name}`)
-    //   )
-    // ).toBeInTheDocument();
-    // expect(
-    //   screen.getByText(`Author: ${mockPost.author.name}`)
-    // ).toBeInTheDocument();
-
     // Check if the link points to the correct post
     const linkElement = screen.getByRole("link");
     expect(linkElement).toHaveAttribute("href", `/posts/${mockPost.id}`);

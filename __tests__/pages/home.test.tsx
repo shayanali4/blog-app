@@ -23,12 +23,6 @@ describe("AnalyticsPage", () => {
     // Render the page
     render(await AnalyticsPage());
 
-    // render(
-    //   <div style={{ width: "800px", height: "600px" }}>
-    //     {await (<AnalyticsPage />)}
-    //   </div>
-    // );
-
     // Check if the page title is rendered
     expect(screen.getByText("Analytics")).toBeInTheDocument();
 
